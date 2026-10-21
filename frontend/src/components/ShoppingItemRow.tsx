@@ -4,40 +4,50 @@ import type { ShoppingItem } from '../types/shopping';
 
 type ShoppingItemRowProps = {
   item: ShoppingItem;
+  canEdit?: boolean;
   onRemove: (itemId: number) => void;
   onToggle: (itemId: number) => void;
 };
 
 export function ShoppingItemRow({
   item,
+  canEdit = true,
   onRemove,
   onToggle,
 }: ShoppingItemRowProps) {
   return (
     <View style={styles.container}>
-      <Pressable
-        accessibilityLabel={`${item.completed ? 'Desmarcar' : 'Marcar'} ${item.name}`}
-        accessibilityRole="checkbox"
-        accessibilityState={{ checked: item.completed }}
-        onPress={() => onToggle(item.id)}
-        style={[styles.checkButton, item.completed && styles.checkedButton]}
-      >
-        <Text style={styles.checkText}>{item.completed ? 'OK' : ''}</Text>
-      </Pressable>
+      {canEdit ? (
+        <Pressable
+          accessibilityLabel={`${item.completed ? 'Desmarcar' : 'Marcar'} ${item.name}`}
+          accessibilityRole="checkbox"
+          accessibilityState={{ checked: item.completed }}
+          onPress={() => onToggle(item.id)}
+          style={[styles.checkButton, item.completed && styles.checkedButton]}
+        >
+          <Text style={styles.checkText}>{item.completed ? 'OK' : ''}</Text>
+        </Pressable>
+      ) : (
+        <View style={[styles.checkButton, item.completed && styles.checkedButton]}>
+          <Text style={styles.checkText}>{item.completed ? 'OK' : ''}</Text>
+        </View>
+      )}
 
       <Text style={[styles.name, item.completed && styles.completedName]}>
         {item.name}
       </Text>
 
-      <Pressable
-        accessibilityLabel={`Remover ${item.name}`}
-        accessibilityRole="button"
-        hitSlop={8}
-        onPress={() => onRemove(item.id)}
-        style={styles.removeButton}
-      >
-        <Text style={styles.removeText}>Remover</Text>
-      </Pressable>
+      {canEdit ? (
+        <Pressable
+          accessibilityLabel={`Remover ${item.name}`}
+          accessibilityRole="button"
+          hitSlop={8}
+          onPress={() => onRemove(item.id)}
+          style={styles.removeButton}
+        >
+          <Text style={styles.removeText}>Remover</Text>
+        </Pressable>
+      ) : null}
     </View>
   );
 }

@@ -3,21 +3,22 @@ import { Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
 import { colors } from '../theme/colors';
 
 type ShoppingInputProps = {
-  onAdd: (itemName: string) => void;
+  onAdd: (itemName: string) => Promise<boolean>;
 };
 
 export function ShoppingInput({ onAdd }: ShoppingInputProps) {
   const [itemName, setItemName] = useState('');
 
-  function handleAddItem() {
+  async function handleAddItem() {
     const trimmedName = itemName.trim();
 
     if (!trimmedName) {
       return;
     }
 
-    onAdd(trimmedName);
-    setItemName('');
+    if (await onAdd(trimmedName)) {
+      setItemName('');
+    }
   }
 
   return (
